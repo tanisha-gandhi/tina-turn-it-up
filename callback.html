@@ -1,30 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Spotify Callback</title>
-</head>
-<body>
-  <h2>Login Successful</h2>
-  <p id="token">Fetching token...</p>
+<script>
+  async function getAccessToken(code) {
+    const codeVerifier = sessionStorage.getItem('code_verifier');
 
-  <script>
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const accessToken = params.get("access_token");
+    const body = new URLSearchParams({
+      client_id: '0f563b1a49f648e383eae725198d3bbf',
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: 'https://tanisha-gandhi.github.io/tina-turn-it-up/callback.html',
+      code_verifier: codeVerifier
+    });
 
-    if (accessToken) {
-      // Save token in localStorage
-      localStorage.setItem('spotify_token', accessToken);
+    const response = await fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString()
+    });
 
-      document.getElementById("token").textContent = "Access Token saved! Redirecting...";
+    const data = await response.json();
 
-      // Redirect back to main app page after 1 second
-      setTimeout(() => {
-        window.location.href = '/';  // Change this to your main app page URL if different
-      }, 1000);
+    if (data.access_token) {
+      document.getElementById('token').textContent = 'Access Token:\n' + data.access_token;
+      // Save token for API calls, e.g. sessionStorage.setItem('access_token', data.access_token);
     } else {
-      document.getElementById("token").textContent = "No access token found. Please login again.";
+      document.getElementById('token').textContent = 'Error getting token: ' + JSON.stringify(data);
     }
-  </script>
-</body>
-</html>
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+
+  if (code) {
+    getAccessToken(code);
+  } else {
+    document.getElementById('token').textContent = 'No code found in URL. Please login first.';
+  }
+</script>
