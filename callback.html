@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Spotify Callback</title>
+</head>
+<body>
+  <h2>Login Successful</h2>
+  <p id="token">Fetching token...</p>
+
+  <script>
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const accessToken = params.get("access_token");
+
+    if (accessToken) {
+      // Save token in localStorage
+      localStorage.setItem('spotify_token', accessToken);
+
+      document.getElementById("token").textContent = "Access Token saved! Redirecting...";
+
+      // Redirect back to main app page after 1 second
+      setTimeout(() => {
+        window.location.href = '/';  // Change this to your main app page URL if different
+      }, 1000);
+    } else {
+      document.getElementById("token").textContent = "No access token found. Please login again.";
+    }
+  </script>
+</body>
+</html>
