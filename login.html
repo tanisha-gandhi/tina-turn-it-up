@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spotify Login Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Login with Spotify</h1>
+    <button id="login-btn">Log in with Spotify</button>
+  </div>
+
+  <script>
+    const clientId = 'YOUR_SPOTIFY_CLIENT_ID'; // Replace with your Client ID
+    const redirectUri = 'http://localhost:5500/callback.html'; // Replace with your redirect URI
+    const scopes = [
+      'user-read-private',
+      'user-read-email'
+    ];
+
+    document.getElementById('login-btn').addEventListener('click', () => {
+      const authUrl = 'https://accounts.spotify.com/authorize' +
+        '?response_type=token' +
+        '&client_id=' + encodeURIComponent(clientId) +
+        '&scope=' + encodeURIComponent(scopes.join(' ')) +
+        '&redirect_uri=' + encodeURIComponent(redirectUri);
+
+      // Redirect to Spotify login
+      window.location.href = authUrl;
+    });
+  </script>
+</body>
+</html>
